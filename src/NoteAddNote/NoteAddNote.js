@@ -28,6 +28,41 @@ export default class NoteAddNote extends Component {
     handleSubmit = e => {
         e.preventDefault()
         console.log('handledSubmit for Note add')
+        const { name, content, folderId } = e.target
+        const newanote = {
+            name: name.value,
+            content: content.value,
+            folderId: folderId.value
+        }
+        console.log(newanote)
+        this.setState({ error: null })
+        fetch(config.API_ENDPOINT + `/notes`, {
+            method: 'POST',
+            body: JSON.stringify(newanote),
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `bearer ${config.API_KEY}`
+            }
+        })
+        .then(res => {
+            console.log(res);
+            if (!res.ok) {
+                return res.json().then(error => {
+                    throw error
+                })
+            }
+            return res.json()
+        })
+        .then(data => {
+            name.value = ''
+            content.value = ''
+            folderId.value = ''
+            this.context.addNote(data)
+        })
+        .catch(error => {
+            this.setState({ error })
+        })
+
     }
 
 
@@ -76,7 +111,7 @@ export default class NoteAddNote extends Component {
                         required
                     />
                     <br />
-                    <label for htmlFor='content'>
+                    <label htmlFor='content' id='clabel'>
                         New Note Content<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
                     <textarea 
@@ -89,12 +124,12 @@ export default class NoteAddNote extends Component {
                         required
                     />
                     <br />
-                    <label for htmlFor='content'>
-                        New Note Folder<span>&nbsp;&nbsp;&nbsp;</span>
+                    <label htmlFor='content'>
+                        Select Folder<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
-                    <select>
+                    <select name='folderId' id='folderId'>
                         {this.context.folders.map(folder => (
-                            <option key={folder.id} value={folder.id}>
+                            <option key={folder.id} value={folder.id} >
                                 {folder.name}
                             </option>
                         ))}

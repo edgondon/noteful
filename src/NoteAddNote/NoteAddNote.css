@@ -6,5 +6,9 @@
 #content {
     color: red;
     width: 300px;
-    rows: 5;
+    
+}
+
+#clabel {
+    vertical-align: top;
 }
