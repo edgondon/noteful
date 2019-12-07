@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+
 import CircleButton from '../CircleButton/CircleButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../App/ApiContext'
 import { findNote, findFolder } from '../notes-helpers'
 import './NoteAddFolder.css'
-import { nullLiteral } from '@babel/types'
+
 import config from '../App/config';
 
 
@@ -44,7 +44,7 @@ export default class NoteAddFolder extends Component {
             }
         })
             .then(res => {
-                console.log(res);
+
                 if (!res.ok) {
                     // get the error message from the response,
                     return res.json().then(error => {
@@ -53,11 +53,11 @@ export default class NoteAddFolder extends Component {
                     })
                 }
                 return res.json()
-                
+
             })
             .then(data => {
                 name.value = ''
-                console.log(data.name)
+
                 this.context.addFolder(data)
             })
             .catch(error => {
@@ -76,7 +76,7 @@ export default class NoteAddFolder extends Component {
 
 
         return (
-            
+
 
             <div className='NotePageNav'>
                 <CircleButton
@@ -111,7 +111,7 @@ export default class NoteAddFolder extends Component {
                         required
                     />
                     <div className='AddFolder__buttons'>
-                        <button type='submit'>Submit</button> 
+                        <button type='submit'>Submit</button>
                     </div>
 
 

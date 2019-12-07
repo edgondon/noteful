@@ -7,11 +7,12 @@ import NoteListMain from '../NoteListMain/NoteListMain';
 import NotePageMain from '../NotePageMain/NotePageMain';
 import NoteAddFolder from '../NoteAddFolder/NoteAddFolder';
 import NoteAddNote from '../NoteAddNote/NoteAddNote';
-import dummyStore from '../dummy-store';
-import {getNotesForFolder, findNote, findFolder} from '../notes-helpers';
+
+
 import './App.css';
 import config from './config';
 import ApiContext from './ApiContext';
+import CompError1 from './CompError1';
 
 
 class App extends Component {
@@ -21,7 +22,7 @@ class App extends Component {
     };
 
     componentDidMount() {
-    console.log('hi')
+    
        Promise.all([
            fetch(`${config.API_ENDPOINT}/notes`),
            fetch(`${config.API_ENDPOINT}/folders`)
@@ -54,8 +55,7 @@ class App extends Component {
             folders: [ ...this.state.folders, folder ],
         })
        
-        console.log(this.state.folders)
-        console.log(`hello`)
+
     };
 
     addNote = note => {
@@ -63,8 +63,7 @@ class App extends Component {
             notes: [ ...this.state.notes, note ],
         })
        
-        console.log(this.state.notes)
-        console.log(`hello SNOTEY`)
+
     };
 
     renderNavRoutes() {
@@ -80,11 +79,16 @@ class App extends Component {
                         
                     />
                 ))}
+                <CompError1>
                 <Route path="/note/:noteId" component={NotePageNav} />
+                </CompError1>
                     
-                
+                <CompError1>
                 <Route path="/add-folder" component={NoteAddFolder} />
+                </CompError1>
+                <CompError1>
                 <Route path="/add-note" component={NoteAddNote} />
+                </CompError1>
                
             </>
         );
@@ -94,6 +98,7 @@ class App extends Component {
        
         return (
             <>
+                <CompError1>
                 {['/', '/folder/:folderId'].map(path => (
                     <Route
                         exact
@@ -103,10 +108,13 @@ class App extends Component {
                         
                     />
                 ))}
+                </CompError1>
+                <CompError1>
                 <Route
                     path="/note/:noteId" component={NotePageMain}
                     
                 />
+                </CompError1>
             </>
         );
     }

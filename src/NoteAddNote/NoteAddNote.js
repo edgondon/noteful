@@ -45,14 +45,14 @@ export default class NoteAddNote extends Component {
 
     handleSubmit = e => {
         e.preventDefault()
-        console.log('handledSubmit for Note add')
+        
         const { name, content, folderId } = e.target
         const newanote = {
             name: name.value,
             content: content.value,
             folderId: folderId.value
         }
-        console.log(newanote)
+        
         this.setState({ error: null })
         fetch(config.API_ENDPOINT + `/notes`, {
             method: 'POST',
@@ -63,7 +63,7 @@ export default class NoteAddNote extends Component {
             }
         })
         .then(res => {
-            console.log(res);
+          
             if (!res.ok) {
                 return res.json().then(error => {
                     throw error
