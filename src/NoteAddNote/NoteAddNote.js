@@ -5,9 +5,20 @@ import ApiContext from '../App/ApiContext'
 import { findNote, findFolder } from '../notes-helpers'
 import config from '../App/config'
 import './NoteAddNote.css'
+import ValidationError from "./ValidationError"
 
 
 export default class NoteAddNote extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                name: {
+                    value: "",
+                    touched:false
+                }
+            }
+        }
+
 
     static defaultProps = {
         history: {
@@ -24,6 +35,13 @@ export default class NoteAddNote extends Component {
         error: null,
     };
 
+    updateName(name) {
+        this.setState({name: {value: name, touched: true}})
+    }
+
+    updateName2(name) {
+        this.setState({name: {value: "", touched: true}})
+    }
 
     handleSubmit = e => {
         e.preventDefault()
@@ -66,12 +84,21 @@ export default class NoteAddNote extends Component {
     }
 
 
+    validateName() {
+        const name = this.state.name.value.trim();
+        if (name.length ===0) {
+            return "Name is required";
+        }
+        
+    }
+
     render() {
         const { notes, folders, } = this.context
         const { noteId } = this.props.match.params
         const note = findNote(notes, noteId) || {}
         const folder = findFolder(folders, note.folderId)
         const { error } = this.state
+        const nameError = this.validateName()
 
 
 
@@ -109,7 +136,10 @@ export default class NoteAddNote extends Component {
                         id='name'
                         placeholder='Rooster'
                         required
+                        onChange={e => this.updateName(e.target.value)}
+            
                     />
+                    {this.state.name.touched && <ValidationError message={nameError} />}
                     <br />
                     <label htmlFor='content' id='clabel'>
                         New Note Content<span>&nbsp;&nbsp;&nbsp;</span>
@@ -122,12 +152,15 @@ export default class NoteAddNote extends Component {
                         id='content'
                         placeholder='Write something here...'
                         required
+                        onChange={(!this.state.name.touched) ? ( e => this.updateName2(e.target.value)) : undefined}
                     />
                     <br />
                     <label htmlFor='content'>
                         Select Folder<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
-                    <select name='folderId' id='folderId'>
+                    <select name='folderId' id='folderId' 
+                    onChange={(!this.state.name.touched) ? ( e => this.updateName2(e.target.value)) : undefined}
+                    >
                         {this.context.folders.map(folder => (
                             <option key={folder.id} value={folder.id} >
                                 {folder.name}
