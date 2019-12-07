@@ -6,6 +6,7 @@ import NotePageNav from '../NotePageNav/NotePageNav';
 import NoteListMain from '../NoteListMain/NoteListMain';
 import NotePageMain from '../NotePageMain/NotePageMain';
 import NoteAddFolder from '../NoteAddFolder/NoteAddFolder';
+import NoteAddNote from '../NoteAddNote/NoteAddNote';
 import dummyStore from '../dummy-store';
 import {getNotesForFolder, findNote, findFolder} from '../notes-helpers';
 import './App.css';
@@ -57,6 +58,14 @@ class App extends Component {
         console.log(`hello`)
     };
 
+    addNote = note => {
+        this.setState({
+            notes: [ ...this.state.notes, note ],
+        })
+       
+        console.log(this.state.notes)
+        console.log(`hello SNOTEY`)
+    };
 
     renderNavRoutes() {
         
@@ -75,7 +84,8 @@ class App extends Component {
                     
                 
                 <Route path="/add-folder" component={NoteAddFolder} />
-                <Route path="/add-note" component={NotePageNav} />
+                <Route path="/add-note" component={NoteAddNote} />
+               
             </>
         );
     }

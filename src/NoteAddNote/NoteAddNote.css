@@ -1,0 +1,10 @@
+.norm {
+    display: flexbox;
+    flex-direction: row;
+}
+
+#content {
+    color: red;
+    width: 300px;
+    rows: 5;
+}
