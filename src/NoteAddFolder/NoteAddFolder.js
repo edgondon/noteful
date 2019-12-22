@@ -63,6 +63,7 @@ export default class NoteAddFolder extends Component {
             .catch(error => {
                 this.setState({ error })
             })
+            this.props.history.goBack()
     }
 
 
@@ -100,7 +101,7 @@ export default class NoteAddFolder extends Component {
                         {error && <p>{error.message}</p>}
                     </div>
                     <label htmlFor='name'>
-                        New Note Title<span>&nbsp;&nbsp;&nbsp;</span>
+                        New Folder Title<span>&nbsp;&nbsp;&nbsp;</span>
 
                     </label>
                     <input

@@ -101,6 +101,7 @@ export default class NoteAddNote extends Component {
             .catch(error => {
                 this.setState({ error })
             })
+            this.props.history.goBack()
 
     }
 
