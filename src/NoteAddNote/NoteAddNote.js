@@ -9,17 +9,33 @@ import ValidationError from "./ValidationError"
 
 
 export default class NoteAddNote extends Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-                name: {
-                    value: "",
-                    touched:false
-                }
-            }
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: {
+                value: "",
+                touched: false
+            },
+            datetime: new Date()
         }
+    }
 
+    componentDidMount() {
+        console.log('componentDidMount')
+        this.interval = setInterval(() => {
+            // disabled console.log due to excessive logging!
+            // console.log('setInterval')
+            this.setState({
+                datetime: new Date()
+            })
+            }, 1000)
+        console.log(this.state.datetime)
 
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval)
+    }
     static defaultProps = {
         history: {
             goBack: () => { }
@@ -36,23 +52,27 @@ export default class NoteAddNote extends Component {
     };
 
     updateName(name) {
-        this.setState({name: {value: name, touched: true}})
+        this.setState({ name: { value: name, touched: true } })
+       
     }
 
     updateName2(name) {
-        this.setState({name: {value: "", touched: true}})
+        this.setState({ name: { value: "", touched: true } })
     }
 
     handleSubmit = e => {
         e.preventDefault()
-        
-        const { name, content, folderId } = e.target
-        const newanote = {
+
+        const { name, content, folderId, modified } = e.target
+        let newanote = {
             name: name.value,
             content: content.value,
-            folderId: folderId.value
+            folderId: folderId.value,
+            modified: modified.value
         }
         
+        console.log(newanote);
+
         this.setState({ error: null })
         fetch(config.API_ENDPOINT + `/notes`, {
             method: 'POST',
@@ -62,34 +82,35 @@ export default class NoteAddNote extends Component {
                 'authorization': `bearer ${config.API_KEY}`
             }
         })
-        .then(res => {
-          
-            if (!res.ok) {
-                return res.json().then(error => {
-                    throw error
-                })
-            }
-            return res.json()
-        })
-        .then(data => {
-            name.value = ''
-            content.value = ''
-            folderId.value = ''
-            this.context.addNote(data)
-        })
-        .catch(error => {
-            this.setState({ error })
-        })
+            .then(res => {
+
+                if (!res.ok) {
+                    return res.json().then(error => {
+                        throw error
+                    })
+                }
+                return res.json()
+            })
+            .then(data => {
+                name.value = ''
+                content.value = ''
+                folderId.value = ''
+                modified.value = ''
+                this.context.addNote(data)
+            })
+            .catch(error => {
+                this.setState({ error })
+            })
 
     }
 
 
     validateName() {
         const name = this.state.name.value.trim();
-        if (name.length ===0) {
+        if (name.length === 0) {
             return "Name is required";
         }
-        
+
     }
 
     render() {
@@ -99,12 +120,13 @@ export default class NoteAddNote extends Component {
         const folder = findFolder(folders, note.folderId)
         const { error } = this.state
         const nameError = this.validateName()
-
+        const datez = this.state.datetime
+        const dated = datez.toJSON()
 
 
         return (
 
- 
+
             <div className='NotePageNav'>
                 <CircleButton
                     tag='button'
@@ -127,7 +149,7 @@ export default class NoteAddNote extends Component {
                         {error && <p>{error.message}</p>}
                     </div>
                     <label htmlFor='name'>
-                        New Note Title<span>&nbsp;&nbsp;&nbsp;</span>
+                        New Note Title:<span>&nbsp;&nbsp;&nbsp;</span>
 
                     </label>
                     <input
@@ -137,14 +159,28 @@ export default class NoteAddNote extends Component {
                         placeholder='Rooster'
                         required
                         onChange={e => this.updateName(e.target.value)}
-            
+
                     />
                     {this.state.name.touched && <ValidationError message={nameError} />}
                     <br />
-                    <label htmlFor='content' id='clabel'>
-                        New Note Content<span>&nbsp;&nbsp;&nbsp;</span>
+                    <label htmlFor='modified'>
+                        Date Modified (Read Only)<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
-                    <textarea 
+                    <input 
+                        type='datetime-local'
+                        name='modified'
+                        size="25"
+                        id='modified'
+                        value= {dated}
+                        readOnly
+
+                    />
+                    <br />
+
+                    <label htmlFor='content' id='clabel'>
+                        New Note Content:<span>&nbsp;&nbsp;&nbsp;</span>
+                    </label>
+                    <textarea
                         type='text'
                         size="300"
                         rows="5"
@@ -152,14 +188,14 @@ export default class NoteAddNote extends Component {
                         id='content'
                         placeholder='Write something here...'
                         required
-                        onChange={(!this.state.name.touched) ? ( e => this.updateName2(e.target.value)) : undefined}
+                        onChange={(!this.state.name.touched) ? (e => this.updateName2(e.target.value)) : undefined}
                     />
                     <br />
                     <label htmlFor='content'>
                         Select Folder<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
-                    <select name='folderId' id='folderId' 
-                    onChange={(!this.state.name.touched) ? ( e => this.updateName2(e.target.value)) : undefined}
+                    <select name='folderId' id='folderId'
+                        onChange={(!this.state.name.touched) ? (e => this.updateName2(e.target.value)) : undefined}
                     >
                         {this.context.folders.map(folder => (
                             <option key={folder.id} value={folder.id} >
@@ -169,7 +205,7 @@ export default class NoteAddNote extends Component {
 
                     </select>
                     <div className='AddNote__buttons'>
-                        <button type='submit'>Submit</button> 
+                        <button type='submit'>Submit</button>
                     </div>
 
 
