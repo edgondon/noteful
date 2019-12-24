@@ -37,6 +37,9 @@ export default class NotePageMain extends React.Component {
       </div>
     </section>
   )
+
+  
+
 }}
 
 
