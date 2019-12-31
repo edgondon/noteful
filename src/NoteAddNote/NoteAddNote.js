@@ -68,7 +68,7 @@ export default class NoteAddNote extends Component {
             name: name.value,
             content: content.value,
             folderId: folderId.value,
-            modified: modified.value
+            modified: new Date()
         }
         
         console.log(newanote);
@@ -164,7 +164,7 @@ export default class NoteAddNote extends Component {
                     />
                     {this.state.name.touched && <ValidationError message={nameError} />}
                     <br />
-                    <label htmlFor='modified'>
+                   {/*  <label htmlFor='modified'>
                         Date Modified (Read Only)<span>&nbsp;&nbsp;&nbsp;</span>
                     </label>
                     <input 
@@ -176,7 +176,7 @@ export default class NoteAddNote extends Component {
                         readOnly
 
                     />
-                    <br />
+                    <br /> */}
 
                     <label htmlFor='content' id='clabel'>
                         New Note Content:<span>&nbsp;&nbsp;&nbsp;</span>
